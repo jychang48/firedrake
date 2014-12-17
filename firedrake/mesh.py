@@ -420,24 +420,6 @@ class MeshBase(object):
                     self.coordinates = function.Function(self._coordinate_fs,
                                                          val=coordinates,
                                                          name="Coordinates")
-            self._ufl_domain = ufl.Domain(self.coordinates)
-            # Build a new ufl element for this function space with the
-            # correct domain.  This is necessary since this function space
-            # is in the cache and will be picked up by later
-            # VectorFunctionSpace construction.
-            self._coordinate_fs._ufl_element = self._coordinate_fs.ufl_element().reconstruct(domain=self.ufl_domain())
-            # HACK alert!
-            # Replace coordinate Function by one that has a real domain on it (but don't copy values)
-            self.coordinates = function.Function(self._coordinate_fs, val=self.coordinates.dat)
-            # Add domain and subdomain_data to the measure objects we store with the mesh.
-            self._dx = ufl.Measure('cell', domain=self, subdomain_data=self.coordinates)
-            self._ds = ufl.Measure('exterior_facet', domain=self, subdomain_data=self.coordinates)
-            self._dS = ufl.Measure('interior_facet', domain=self, subdomain_data=self.coordinates)
-            # Set the subdomain_data on all the default measures to this
-            # coordinate field.  Also set the domain on the measure.
-            for measure in [ufl.dx, ufl.ds, ufl.dS]:
-                measure._subdomain_data = self.coordinates
-                measure._domain = self.ufl_domain()
         self._callback = callback
 
     def init(self):
@@ -469,6 +451,25 @@ class MeshBase(object):
                 self._ufl_cell = ufl.Cell(ufl_cell.cellname(),
                                           geometric_dimension=value.element().value_shape()[0])
             self._ufl_domain = ufl.Domain(self.ufl_cell(), data=self)
+
+        self._ufl_domain = ufl.Domain(self.coordinates)
+        # Build a new ufl element for this function space with the
+        # correct domain.  This is necessary since this function space
+        # is in the cache and will be picked up by later
+        # VectorFunctionSpace construction.
+        self._coordinate_fs._ufl_element = self._coordinate_fs.ufl_element().reconstruct(domain=self.ufl_domain())
+        # HACK alert!
+        # Replace coordinate Function by one that has a real domain on it (but don't copy values)
+        self.coordinates = function.Function(self._coordinate_fs, val=self.coordinates.dat)
+        # Add domain and subdomain_data to the measure objects we store with the mesh.
+        self._dx = ufl.Measure('cell', domain=self, subdomain_data=self.coordinates)
+        self._ds = ufl.Measure('exterior_facet', domain=self, subdomain_data=self.coordinates)
+        self._dS = ufl.Measure('interior_facet', domain=self, subdomain_data=self.coordinates)
+        # Set the subdomain_data on all the default measures to this
+        # coordinate field.  Also set the domain on the measure.
+        for measure in [ufl.dx, ufl.ds, ufl.dS]:
+            measure._subdomain_data = self.coordinates
+            measure._domain = self.ufl_domain()
 
     @property
     def layers(self):
