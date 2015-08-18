@@ -15,6 +15,7 @@ import extrusion_utils as eutils
 import fiat_utils
 import function
 import functionspace
+import spatialindex
 import utility_meshes
 import utils
 from parameters import parameters
@@ -557,6 +558,16 @@ class Mesh(object):
                                      self.cell_closure,
                                      fiat_element)
 
+    @utils.cached_property
+    def spatial_index(self):
+        cell_node_list = self.coordinates.function_space().cell_node_list
+        cell_coords = self.coordinates.dat.data[cell_node_list]
+
+        cell_coords_min = cell_coords.min(axis=1)
+        cell_coords_max = cell_coords.max(axis=1)
+
+        return spatialindex.from_regions(cell_coords_min, cell_coords_max)
+
     @property
     def coordinates(self):
         """The :class:`.Function` containing the coordinates of this mesh."""
@@ -908,6 +919,10 @@ class ExtrudedMesh(Mesh):
         return dmplex.get_cell_nodes(global_numbering,
                                      self.cell_closure,
                                      fiat_utils.FlattenedElement(fiat_element))
+
+    @utils.cached_property
+    def spatial_index(self):
+        raise NotImplementedError("Spatial index not available for extruded meshes.")
 
     @property
     def layers(self):

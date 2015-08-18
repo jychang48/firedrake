@@ -1,5 +1,5 @@
 import ctypes
-from ctypes import POINTER, c_int, c_double
+from ctypes import POINTER, c_int, c_double, c_void_p
 
 from os import path
 
@@ -11,7 +11,8 @@ class _CFunction(ctypes.Structure):
                 ("coords", POINTER(c_double)),
                 ("coords_map", POINTER(c_int)),
                 ("f", POINTER(c_double)),
-                ("f_map", POINTER(c_int))]
+                ("f_map", POINTER(c_int)),
+                ("sidx", c_void_p)]
 
 
 def cFunction(function):
@@ -28,6 +29,7 @@ def cFunction(function):
     c_function.coords_map = coordinates_space.cell_node_list.ctypes.data_as(POINTER(c_int))
     c_function.f = function.dat.data.ctypes.data_as(POINTER(c_double))
     c_function.f_map = function_space.cell_node_list.ctypes.data_as(POINTER(c_int))
+    c_function.sidx = mesh.spatial_index.ctypes
 
     # Return pointer
     return ctypes.pointer(c_function)
