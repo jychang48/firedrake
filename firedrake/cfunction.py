@@ -45,24 +45,8 @@ def make_c_evaluate(function, c_name="evaluate", ldargs=None):
     coordinates_ufl_element = coordinates.function_space().ufl_element()
 
     src = compile_element(ufl_element, coordinates_ufl_element)
-    src += """
-#include <evaluate.h>
-
-int locate_cell(struct Function *f, double *x, int dim, inside_predicate try_candidate, void *data_)
-{
-    int c;
-    for (c = 0; c < f->n_cells; c++) {
-        if ((*try_candidate)(data_, f, c, x)) {
-            return c;
-        }
-    }
-    (void) dim;
-    return -1;
-}
-"""
 
     if ldargs is None:
-        kwargs = {}
-    else:
-        kwargs = dict(ldargs=ldargs)
-    return compilation.load(src, "c", c_name, cppargs=["-I%s" % path.dirname(__file__)], **kwargs)
+        ldargs = []
+    ldargs += [path.join(path.dirname(__file__), "locate.o"), "-lspatialindex"]
+    return compilation.load(src, "c", c_name, cppargs=["-I%s" % path.dirname(__file__)], ldargs=ldargs)
