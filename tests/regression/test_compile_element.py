@@ -26,6 +26,7 @@ def make_c_evaluator(f):
     return evaluate
 
 
+@pytest.mark.xfail
 def test_1d():
     mesh = UnitIntervalMesh(2)
     V = FunctionSpace(mesh, "P", 3)
