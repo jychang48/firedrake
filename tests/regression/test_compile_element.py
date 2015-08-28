@@ -69,7 +69,6 @@ def test_2d_quad():
     assert np.allclose(expected, actual)
 
 
-@pytest.mark.xfail
 def test_2d_nonaffine_quad():
     mesh = Mesh("/home/mh1714/git/firedrake/vedat/quad.msh")
     V = FunctionSpace(mesh, "Q", 2)
