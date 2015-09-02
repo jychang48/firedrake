@@ -52,6 +52,8 @@ honoured.""",
 
     parser.add_argument("--log", action='store_true',
                         help="Produce a verbose log of the installation process in firedrake-install.log. If you have problem running this script, please include this log in any bug report you file.")
+    parser.add_argument("--branch",
+                        help="Install the specified branch of firedrake.")
     parser.add_argument("--disable_ssh", action="store_true",
                         help="Do not attempt to use ssh to clone git repositories: fall immediately back to https.")
     parser.add_argument("--no_package_manager", action='store_false', dest="package_manager",
@@ -341,6 +343,11 @@ if mode == "install":
     os.chdir("src")
 
     git_clone("git+https://github.com/firedrakeproject/firedrake.git")
+    if args.branch:
+        os.chdir("firedrake")
+        check_call(["git", "checkout", args.branch])
+        os.chdir("..")
+
     packages = clone_dependencies("firedrake")
     packages = clone_dependencies("PyOP2") + packages
     packages += ["firedrake"]
