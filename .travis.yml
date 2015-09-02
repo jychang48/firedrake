@@ -46,7 +46,7 @@ before_install:
   - pip install -U pytest
   - pip install -U Cython
   - pip install pytest-benchmark
-  - pip install git+https://bitbucket.org/mapdes/ffc.git@rename_ffc#egg=mffc
+  - pip install git+https://bitbucket.org/mapdes/ffc@rename_ffc#egg=mffc
 install:
   - mkdir tmp
   - cd tmp
