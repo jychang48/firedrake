@@ -14,10 +14,10 @@ from ufl.algorithms import compute_form_data, ReuseTransformer
 from ufl.constantvalue import Zero
 from ufl_expr import Argument
 
-from ffc import compile_form as ffc_compile_form
-from ffc import constants
-from ffc import log
-from ffc.quadrature.quadraturetransformerbase import EmptyIntegrandError
+from mffc import compile_form as ffc_compile_form
+from mffc import constants
+from mffc import log
+from mffc.quadrature.quadraturetransformerbase import EmptyIntegrandError
 
 from pyop2.caching import DiskCached
 from pyop2.op2 import Kernel

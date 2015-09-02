@@ -275,7 +275,6 @@ if osname == "Darwin":
         brew_install("python")
         check_call(["brew", "tap", "homebrew/python"])
         brew_install("numpy")
-        brew_install("swig")
         brew_install("cmake")
 
     else:
@@ -307,7 +306,6 @@ elif osname == "Linux":
         stdout.write("Python version 2.7.\n")
         stdout.write("pip and the Python headers.\n")
         stdout.write("cmake.\n")
-        stdout.write("swig.\n")
 
 else:
     stdout.write("You do not appear to be running Linux or MacOS. Please do not be surprised if this install fails.\n")

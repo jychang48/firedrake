@@ -1,6 +1,6 @@
 """The parameters dictionary contains global parameter settings."""
 
-from ffc import default_parameters
+from mffc import default_parameters
 from pyop2.configuration import configuration
 
 __all__ = ['Parameters', 'parameters']
