@@ -1,6 +1,6 @@
 from weakref import WeakKeyDictionary
 import FIAT
-import ffc
+import mffc
 
 
 _fiat_element_cache = WeakKeyDictionary()
